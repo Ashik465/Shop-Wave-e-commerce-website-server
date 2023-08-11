@@ -27,7 +27,7 @@ async function run() {
     await client.connect();
 
     const productsCollection = client.db("shopWaveDb").collection("products");
-
+    const cartCollection = client.db("shopWaveDb").collection("cart");
 
 
      //   Get products from database
@@ -48,6 +48,13 @@ async function run() {
         res.send(result);
       });
 
+
+       //   Add to cart
+    app.post("/addtocart", async (req, res) => {
+        const cart = req.body;
+        const result = await cartCollection.insertOne(cart);
+        res.send(result);
+      });
 
 
 
