@@ -50,6 +50,7 @@ async function run() {
 
     const productsCollection = client.db("shopWaveDb").collection("products");
     const cartCollection = client.db("shopWaveDb").collection("cart");
+    const usersCollection = client.db("shopWaveDb").collection("users");
 
     //   JWT Post
     app.post("/jwt", (req, res) => {
@@ -107,6 +108,20 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await cartCollection.deleteOne(query);
+        res.send(result);
+      });
+
+       //   Add User to database
+    app.post("/adduser", async (req, res) => {
+        const user = req.body;
+        const query = { email: user.email };
+        const existingUser = await usersCollection.findOne(query);
+  
+        if (existingUser) {
+          return res.send({ message: "user already exists" });
+        }
+  
+        const result = await usersCollection.insertOne(user);
         res.send(result);
       });
 
