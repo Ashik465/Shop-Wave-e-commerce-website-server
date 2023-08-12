@@ -140,6 +140,20 @@ async function run() {
         res.send(result);
       });
 
+       // Get all products
+    app.get("/allproducts", async (req, res) => {
+        const result = await productsCollection.find({}).toArray();
+        res.send(result);
+      });
+
+      // Delete product
+    app.delete("/deleteproduct/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await productsCollection.deleteOne(query);
+        res.send(result);
+      });
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
