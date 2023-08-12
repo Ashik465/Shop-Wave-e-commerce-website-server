@@ -65,7 +65,7 @@ async function run() {
      //   Get products from database
      app.get("/products", async (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 15;
         const skip = (page - 1) * limit;
         const cursor = productsCollection.find({}).skip(skip).limit(limit);
         const result = await cursor.toArray();
@@ -151,6 +151,13 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await productsCollection.deleteOne(query);
+        res.send(result);
+      });
+
+      // Add product
+    app.post("/addproduct", async (req, res) => {
+        const product = req.body;
+        const result = await productsCollection.insertOne(product);
         res.send(result);
       });
 
