@@ -51,6 +51,7 @@ async function run() {
     const productsCollection = client.db("shopWaveDb").collection("products");
     const cartCollection = client.db("shopWaveDb").collection("cart");
     const usersCollection = client.db("shopWaveDb").collection("users");
+    const ordersCollection = client.db("shopWaveDb").collection("orders");
 
     //   JWT Post
     app.post("/jwt", (req, res) => {
@@ -158,6 +159,22 @@ async function run() {
     app.post("/addproduct", async (req, res) => {
         const product = req.body;
         const result = await productsCollection.insertOne(product);
+        res.send(result);
+      });
+
+      // Get all orders
+    app.get("/allorders", async (req, res) => {
+        const sort = { orderTime: -1 };
+        const result = await ordersCollection.find({}).sort(sort).toArray();
+        res.send(result);
+      });
+  
+      // Update order status
+      app.put("/updateorder/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const update = { $set: { status: "delivered" } };
+        const result = await ordersCollection.updateOne(query, update);
         res.send(result);
       });
 
